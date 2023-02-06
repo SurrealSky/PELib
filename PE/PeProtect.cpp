@@ -462,7 +462,7 @@ bool PeProtect::AddSectionData(const STu8 *pName,const size_t size,DWORD &mRetAd
 		//节区表头空间不足，可考虑扩大最后一个区段空间，将补丁代码添加进去
 		return ExpandLastSection(size,mRetAddr);
 	}
-	if(AddSectionToEnd(pName,size, IMAGE_SCN_CNT_INITIALIZED_DATA | IMAGE_SCN_CNT_CODE | IMAGE_SCN_MEM_EXECUTE | IMAGE_SCN_MEM_READ | IMAGE_SCN_MEM_WRITE))
+	if(AddSectionToEnd(pName,NULL,size, IMAGE_SCN_CNT_INITIALIZED_DATA | IMAGE_SCN_CNT_CODE | IMAGE_SCN_MEM_EXECUTE | IMAGE_SCN_MEM_READ | IMAGE_SCN_MEM_WRITE))
 	{
 		mRetAddr=mBaseCtx->pe.mSectionsVector.back().VirtualAddress;
 		return true;
@@ -470,7 +470,13 @@ bool PeProtect::AddSectionData(const STu8 *pName,const size_t size,DWORD &mRetAd
 	return false;
 }
 
-bool PeProtect::AddSectionToEnd(const STu8 *pName,const size_t size, STu32 chartics)
+/*
+* 参数一：区段名
+* 参数二：补丁数据
+* 参数三：补丁数据大小
+* 参数三：返回添加的区域起始RVA
+*/
+bool PeProtect::AddSectionToEnd(const STu8 *pName, const STu8* data,const size_t size, STu32 chartics)
 {
 	if (!IsEnableAddNewSection()) return false;
 
@@ -493,13 +499,20 @@ bool PeProtect::AddSectionToEnd(const STu8 *pName,const size_t size, STu32 chart
 	
 	//尾部添加节区数据
 	STu8 *pTmp=NULL;
-	pTmp= MemMgr::GetInstance().CommonAlloc(TypeSGIVirtualAllocTAlloc,mBaseCtx->size+FileAlignmentSize(size));
+	pTmp= MemMgr::GetInstance().CommonAlloc(TypeSGIVirtualAllocTAlloc,mBaseCtx->size+__int64(FileAlignmentSize(size)));
 	if(pTmp==NULL) return false;
+	//拷贝PE文件数据
 	memcpy(pTmp,mBaseCtx->pVirMem,mBaseCtx->size);
+	//拷贝补丁数据
+	if (data != NULL)
+	{
+		memcpy(pTmp + mSectionHeader.PointerToRawData, data, size);
+	}
 	MemMgr::GetInstance().CommonDeallocate(TypeSGIVirtualAllocTAlloc,mBaseCtx->pVirMem,mBaseCtx->size);
 	mBaseCtx->size+=FileAlignmentSize(size);
 	mBaseCtx->pVirMem=pTmp;
 	pTmp=NULL;
+
 
 	//修正ctx数据结构
 	mBaseCtx->pe.mNtHeader.FileHeader.NumberOfSections++;
@@ -608,7 +621,7 @@ bool PeProtect::EncryptImportTable()
 
 	//采用末尾增加区段存储导入表
 	STu8 name[] = ".baby";
-	AddSectionToEnd(name, sectionSize, IMAGE_SCN_CNT_INITIALIZED_DATA | IMAGE_SCN_CNT_CODE | IMAGE_SCN_MEM_EXECUTE | IMAGE_SCN_MEM_READ | IMAGE_SCN_MEM_WRITE);
+	AddSectionToEnd(name, NULL,sectionSize, IMAGE_SCN_CNT_INITIALIZED_DATA | IMAGE_SCN_CNT_CODE | IMAGE_SCN_MEM_EXECUTE | IMAGE_SCN_MEM_READ | IMAGE_SCN_MEM_WRITE);
 	STu64 virtualaddr = mBaseCtx->pe.mSectionsVector.back().VirtualAddress;
 
 	//申请空间

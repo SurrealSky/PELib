@@ -73,9 +73,9 @@ bool PEMake::ClsRelocDataDirectory()
 	return ptrPeProtect->ClsRelocDataDirectory();
 }
 
-bool PEMake::AddSectionToEnd(const STu8 *data, const STu32 size,const STu32 chartics)
+bool PEMake::AddSectionToEnd(const STu8 *sectionName, const STu8* data,const STu32 size,const STu32 chartics)
 {
-	return ptrPeProtect->AddSectionToEnd(data,size, chartics);
+	return ptrPeProtect->AddSectionToEnd(sectionName,data,size, chartics);
 }
 
 bool PEMake::EncryptImportTable()
