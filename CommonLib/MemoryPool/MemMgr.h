@@ -1,5 +1,6 @@
 #pragma once
 #include<typedef.h>
+#include<string>
 using namespace SurrealTypes;
 //#include<Windows.h>
 //#ifdef _USRDLL
@@ -31,7 +32,7 @@ namespace SurrealMemMgr
 	{
 	public:
 		static MemMgr &GetInstance();
-		int GetState();
+		void SetDebug2File(bool);
 	private:
 		MemMgr();
 		~MemMgr();
@@ -40,8 +41,18 @@ namespace SurrealMemMgr
 	private:
 		class MemManager;
 		MemManager * pImpl;
+		bool isDebug2File;
 	public:
 		STu8* CommonAlloc(const MemAllocType, const STu64 dwSize);
 		void CommonDeallocate(const MemAllocType, STu8 *p, const STu64 Size = 0);
 	};
+
+	template<typename ... Args>
+	std::string string_format(const std::string& format, Args ... args)
+	{
+		size_t size = snprintf(nullptr, 0, format.c_str(), args ...) + 1; // Extra space for '\0'
+		std::unique_ptr<char[]> buf(new char[size]);
+		snprintf(buf.get(), size, format.c_str(), args ...);
+		return std::string(buf.get(), buf.get() + size - 1); // We don't want the '\0' inside
+	}
 }
