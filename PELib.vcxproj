@@ -110,6 +110,11 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">c:\masm32\bin\ml /c /coff /Zi /Fo $(IntDir)%(Filename).obj %(FullPath)</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename).obj</Outputs>
     </CustomBuild>
+    <CustomBuild Include="patch\temp.asm">
+      <FileType>Document</FileType>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">c:\masm32\bin\ml /c /coff /Zi /Fo $(IntDir)%(Filename).exe %(FullPath) /link /subsystem:windows</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename).exe</Outputs>
+    </CustomBuild>
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>

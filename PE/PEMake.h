@@ -40,8 +40,8 @@ public:
 public:
 	bool Protect1A();	//第一类壳A（书本13.3节）调用AddPatch函数，补丁技术，弹对话框
 	bool Protect2A();	//第二类壳A（书本21章）EXE加密，外壳还原IAT，并对所有区段解密
-	bool Protect3A();	//yoda壳
-	bool Protect4A();	//虚拟机壳
+	bool Protect3A();	//第三类壳：yoda壳
+	bool Protect4A();	//第四类壳：虚拟机壳
 	bool test();
 public:
 	bool WriteCtx2VirMem();
