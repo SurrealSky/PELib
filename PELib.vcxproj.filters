@@ -166,10 +166,10 @@
     <CustomBuild Include="patch\patch1.asm">
       <Filter>patch</Filter>
     </CustomBuild>
-    <CustomBuild Include="patch\patch3.asm">
+    <CustomBuild Include="patch\patch2.asm">
       <Filter>patch</Filter>
     </CustomBuild>
-    <CustomBuild Include="patch\patch4.asm">
+    <CustomBuild Include="patch\patch3.asm">
       <Filter>patch</Filter>
     </CustomBuild>
     <CustomBuild Include="patch\temp.asm">

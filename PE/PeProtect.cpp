@@ -733,6 +733,7 @@ bool PeProtect::AddPatch(const STu8 *pName,const void *pPatch,const unsigned int
 *参数一：区段名
 *参数二：补丁数据
 *参数三：补丁数据大小
+* 特点：将补丁代码加入新区段，原始PE文件不进行修改。
 */
 bool PeProtect::AddPatchAuto2OEP(const STu8 *pName, const void *pPatch, const unsigned int dwSize, const unsigned int nopbytes)
 {
@@ -766,6 +767,7 @@ bool PeProtect::AddPatchAuto2OEP(const STu8 *pName, const void *pPatch, const un
 *参数二：补丁数据
 *参数三：补丁数据大小
 *参数四：补丁修正原始OPE地址的偏移
+*特点：将补丁代码加入新区段，原始PE输入表重构，区段数据进行加密解密。
 */
 bool PeProtect::EncryptOne(const STu8 *pName,const void *pPatch,const unsigned int dwSize,const unsigned int mOffset)
 {
@@ -845,6 +847,8 @@ bool PeProtect::EncryptOne(const STu8 *pName,const void *pPatch,const unsigned i
 *参数二：补丁数据
 *参数三：补丁数据大小
 *参数四：补丁修正原始OPE地址的偏移
+*特点：将补丁代码加入新区段，输入表加密，区段数据进行加密解密，补丁具备花指令，反调试代码。
+*问题：存在.reloc重定位表的话，会出问题
 */
 bool PeProtect::EncryptTwo(const STu8 *pName,const void *pPatch,const unsigned int dwSize,const unsigned int mOffset)
 {
@@ -1055,7 +1059,10 @@ bool PeProtect::EncryptTwo(const STu8 *pName,const void *pPatch,const unsigned i
 }
 
 /*
-*虚拟机壳
+*加密方式一:第三类壳B-虚拟机壳
+*参数一：区段名
+*特点：输入表加密，代码重构，区段数据进行加密解密，花指令，反调试
+* 问题：存在.reloc重定位表的话，会出问题
 */
 bool PeProtect::EncryptThree(const STu8 *strSectionName)
 {

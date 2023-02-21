@@ -103,7 +103,8 @@ BOOL CPEMakeDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
-	tbFilePath.SetWindowTextA("D:\\work\\program\\PELib\\protecttmp\\HashCalc.exe");
+	tbFilePath.SetWindowTextA("D:\\work\\program\\PELib\\protecttmp\\temp.exe");
+	CheckDlgButton(IDC_RADIO1, TRUE);
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -199,7 +200,24 @@ void CPEMakeDlg::OnBnClickedMfcbutton1()
 //保护
 void CPEMakeDlg::OnBnClickedButton1()
 {
-	bool bRet=mPEMake.Protect3A();
+	bool bRet = false;
+
+	if (IsDlgButtonChecked(IDC_RADIO1))
+	{
+		bRet = mPEMake.Protect1A();
+	}
+	else if (IsDlgButtonChecked(IDC_RADIO2))
+	{
+		bRet = mPEMake.Protect2A();
+	}
+	else if (IsDlgButtonChecked(IDC_RADIO3))
+	{
+		bRet = mPEMake.Protect3A();
+	}
+	else if (IsDlgButtonChecked(IDC_RADIO4))
+	{
+		bRet = mPEMake.Protect4A();
+	}
 	if(bRet)
 	{
 		mPEMake.mPeCtx.path.append(".protect.exe");
