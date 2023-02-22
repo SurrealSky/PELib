@@ -34,9 +34,7 @@ protected:
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
 public:
-	afx_msg void OnBnClickedMfcbutton1();
 	CMFCEditBrowseCtrl tbFilePath;
-	CEdit mDisplay;
 	PEMake mPEMake;
 	afx_msg void OnBnClickedButton1();
 	afx_msg void OnBnClickedButton2();

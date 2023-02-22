@@ -58,14 +58,12 @@ void CPEMakeDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_MFCEDITBROWSE1, tbFilePath);
-	DDX_Control(pDX, IDC_EDIT1, mDisplay);
 }
 
 BEGIN_MESSAGE_MAP(CPEMakeDlg, CDialogEx)
 	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
-	ON_BN_CLICKED(IDC_MFCBUTTON1, &CPEMakeDlg::OnBnClickedMfcbutton1)
 	ON_BN_CLICKED(IDC_BUTTON1, &CPEMakeDlg::OnBnClickedButton1)
 	ON_BN_CLICKED(IDC_BUTTON2, &CPEMakeDlg::OnBnClickedButton2)
 END_MESSAGE_MAP()
@@ -157,49 +155,44 @@ HCURSOR CPEMakeDlg::OnQueryDragIcon()
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
-
-//打开文件
-void CPEMakeDlg::OnBnClickedMfcbutton1()
+//保护
+void CPEMakeDlg::OnBnClickedButton1()
 {
 	//需要等待线程等待完成
-	if(mPEMake.isAnalysised())
+	if (mPEMake.isAnalysised())
 	{
 		mPEMake.PEUnload();
 	}
 	CString m_Path;
 	tbFilePath.GetWindowText(m_Path);
-	if(m_Path.GetLength()==0)
+	if (m_Path.GetLength() == 0)
 	{
-		::MessageBox(this->m_hWnd,"请选择要分析的文件","警告",MB_OK);
+		::MessageBox(this->m_hWnd, "请选择要分析的文件", "警告", MB_OK);
 		return;
 	}
 	//加载文件
-	if(!mPEMake.PELoadFile(m_Path.GetBuffer(0),"r"))     //只读方式打开文件
+	if (!mPEMake.PELoadFile(m_Path.GetBuffer(0), "r"))     //只读方式打开文件
 	{
-		::MessageBox(this->m_hWnd,"文件加载失败","警告",MB_OK);
+		::MessageBox(this->m_hWnd, "文件加载失败", "警告", MB_OK);
 		return;
 	}
 
-	if(!mPEMake.CheckPESig())
+	if (!mPEMake.CheckPESig())
 	{
-		::MessageBox(this->m_hWnd,"PE文件错误","警告",MB_OK);
+		::MessageBox(this->m_hWnd, "PE文件错误", "警告", MB_OK);
 		return;
 	}
 
-	if(mPEMake.Analysis())
+	if (mPEMake.Analysis())
 	{
 		mPEMake.SetAnalysised(true);
-	}else
+	}
+	else
 	{
 		mPEMake.SetAnalysised(false);
 		return;
 	}
-	mDisplay.SetWindowTextA("分析完毕");
-}
 
-//保护
-void CPEMakeDlg::OnBnClickedButton1()
-{
 	bool bRet = false;
 
 	if (IsDlgButtonChecked(IDC_RADIO1))
@@ -220,13 +213,20 @@ void CPEMakeDlg::OnBnClickedButton1()
 	}
 	if(bRet)
 	{
-		mPEMake.mPeCtx.path.append(".protect.exe");
-		CFile mFile(mPEMake.mPeCtx.path.c_str(),CFile::modeCreate|CFile::modeReadWrite);
-		mFile.Write(mPEMake.mPeCtx.pVirMem,mPEMake.mPeCtx.size);
-		mFile.Close();
-		mDisplay.SetWindowTextA("保护成功");
-	}else
-		mDisplay.SetWindowTextA("保护失败");
+		CFileDialog dlg(FALSE, "exe", mPEMake.mPeCtx.path.c_str(), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, "TXT Files(*.exe)|*.exe|All Files(*.*)|*.*");
+		///TRUE为OPEN对话框，FALSE为SAVE AS对话框  
+		if (dlg.DoModal() == IDOK)
+		{
+			CFile mFile(dlg.GetPathName(), CFile::modeCreate | CFile::modeReadWrite);
+			mFile.Write(mPEMake.mPeCtx.pVirMem, mPEMake.mPeCtx.size);
+			mFile.Close();
+			AfxMessageBox("另存成功");
+			return;
+		}
+		else
+			return;
+	}
+	AfxMessageBox("保护失败");
 }
 
 //退出
