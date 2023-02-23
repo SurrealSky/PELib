@@ -1,4 +1,4 @@
-#include"../PELib.h"
+ï»¿#include"../PELib.h"
 #include "InterpretHandler.h"
 #include<disasm/disasm.h>
 
@@ -9,39 +9,39 @@ CInterpretHandler::CInterpretHandler(void)
 CInterpretHandler::~CInterpretHandler(void)
 {
 }
-// »ñµÃ¼Ä´æÆ÷µÄÆ«ÒÆ
-// 16ºÍ32Î»ºÍ8Î»µÍ×Ö½Ú¾ùÊ¹ÓÃ32Î»enum£¬8Î»¸ß×Ö½ÚÊ¹ÓÃ20ÒÔÉÏµÄÊı
+// è·å¾—å¯„å­˜å™¨çš„åç§»
+// 16å’Œ32ä½å’Œ8ä½ä½å­—èŠ‚å‡ä½¿ç”¨32ä½enumï¼Œ8ä½é«˜å­—èŠ‚ä½¿ç”¨20ä»¥ä¸Šçš„æ•°
 int CInterpretHandler::GetRegisterOffset(int RegType)
 {
 	if( RegType < 0 )
 		return RegType;
 	int offset = m_RegisterIdx[RegType]*4;
 	if ( RegType >= 20 )
-		offset++;//8Î»¸ß×Ö½ÚµÄµØ·½
+		offset++;//8ä½é«˜å­—èŠ‚çš„åœ°æ–¹
 	return offset;
 }
-//³õÊ¼»¯
+//åˆå§‹åŒ–
 BOOL CInterpretHandler::Init()
 {
-	RandListIdx(m_RegisterIdx,REGCOUNT);	//´òÂÒ¼Ä´æÆ÷Æ«ÒÆµÄË÷Òı
+	RandListIdx(m_RegisterIdx,REGCOUNT);	//æ‰“ä¹±å¯„å­˜å™¨åç§»çš„ç´¢å¼•
 
 	return TRUE;
 }
 
-//ÉèÖÃ²ÎÊı
+//è®¾ç½®å‚æ•°
 void CInterpretHandler::SetArg(VMTable* table,char* asmtext,int len)
 {
 	for(int i = 0; i < 3; i++)
 	{
 		if( i >= table->OperandNum )
 			break;
-		sprintf_s(asmtext,len,"%smov %s,[esp+%02x]\n",asmtext,ArgReg[i],i*4);//½«¶ÑÕ»ÖĞµÄÊı¾İ½»¸ø²ÎÊı¼Ä´æÆ÷
+		sprintf_s(asmtext,len,"%smov %s,[esp+%02x]\n",asmtext,ArgReg[i],i*4);//å°†å †æ ˆä¸­çš„æ•°æ®äº¤ç»™å‚æ•°å¯„å­˜å™¨
 	}
 }
-//»Ö¸´²ÎÊı
+//æ¢å¤å‚æ•°
 void CInterpretHandler::RestoreArg(VMTable* table,char* asmtext,int len)
 {
-	//½«½á¹û±£´æ»Ø¶ÑÕ»
+	//å°†ç»“æœä¿å­˜å›å †æ ˆ
 	for(int i = 0; i < 3; i++)
 	{
 		if( i >= table->OperandNum )
@@ -49,26 +49,26 @@ void CInterpretHandler::RestoreArg(VMTable* table,char* asmtext,int len)
 		sprintf_s(asmtext,len,"%smov [esp+%02x],%s\n",asmtext,i*4,ArgReg[i]);
 	}
 }
-//»Ö¸´±êÖ¾
+//æ¢å¤æ ‡å¿—
 void CInterpretHandler::RestoreFlag(char* asmtext,int len)
 {
-	sprintf_s(asmtext,len,"%sPush [edi+0x%02x]\nPopfd\n",asmtext,GetRegisterOffset(RT_EFlag));//»Ö¸´±êÖ¾
+	sprintf_s(asmtext,len,"%sPush [edi+0x%02x]\nPopfd\n",asmtext,GetRegisterOffset(RT_EFlag));//æ¢å¤æ ‡å¿—
 }
-//±£´æ±êÖ¾
+//ä¿å­˜æ ‡å¿—
 void CInterpretHandler::SaveFlag(char* asmtext,int len)
 {
-	sprintf_s(asmtext,len,"%sPushfd\nPop [edi+0x%02x]\n",asmtext,GetRegisterOffset(RT_EFlag));//±£´æ±êÖ¾
+	sprintf_s(asmtext,len,"%sPushfd\nPop [edi+0x%02x]\n",asmtext,GetRegisterOffset(RT_EFlag));//ä¿å­˜æ ‡å¿—
 }
-//¸ù¾İ½á¹¹Éù³ÆASM×Ö·û´®
+//æ ¹æ®ç»“æ„å£°ç§°ASMå­—ç¬¦ä¸²
 BOOL CInterpretHandler::InterpretASMStr(VMTable* table,char* asmtext,int len)
 {
 	if( strcmp(table->VMInstrName,"") == 0 || asmtext == NULL ) return FALSE;
 
 	memset(asmtext,0,len);
 
-	SetArg(table,asmtext,len);//ÉèÖÃ²ÎÊı
+	SetArg(table,asmtext,len);//è®¾ç½®å‚æ•°
 
-	//»Ö¸´ĞèÒªµÄ¼Ä´æÆ÷
+	//æ¢å¤éœ€è¦çš„å¯„å­˜å™¨
 	for(int i = 0; i < 4; i++)
 	{
 		if( table->NeedReg[i] != NONE && table->NeedReg[i] < 14 )
@@ -130,7 +130,7 @@ BOOL CInterpretHandler::InterpretASMStr(VMTable* table,char* asmtext,int len)
 	{
 		After = InterpretJMP(table,asmtext,len);
 	}
-	else if( table->strInstruction[0] == 'J' || table->strInstruction[0] == 'j' )//²»ÊÇjcxzºÍjmp,¾ÍÊÇÌõ¼şÌø×ªÁË
+	else if( table->strInstruction[0] == 'J' || table->strInstruction[0] == 'j' )//ä¸æ˜¯jcxzå’Œjmp,å°±æ˜¯æ¡ä»¶è·³è½¬äº†
 	{
 		RestoreFlag(asmtext,len);
 		After = InterpretJCC(table,asmtext,len);
@@ -162,8 +162,8 @@ BOOL CInterpretHandler::InterpretASMStr(VMTable* table,char* asmtext,int len)
 		After = CommonInstruction(table,asmtext,len);
 	}
 
-	//sprintf_s(asmtext,len,"%smov [edi+%02x],ebp\n",asmtext,GetRegisterOffset(RT_Esp));//½«ebp(¼´ÕæÕıesp)±£´æµ½espµÄµØÖ·
-	//±£´æ¼Ä´æÆ÷µÄÖµ
+	//sprintf_s(asmtext,len,"%smov [edi+%02x],ebp\n",asmtext,GetRegisterOffset(RT_Esp));//å°†ebp(å³çœŸæ­£esp)ä¿å­˜åˆ°espçš„åœ°å€
+	//ä¿å­˜å¯„å­˜å™¨çš„å€¼
 	for(int i = 0; i < 3; i++)
 	{
 		if( table->SaveReg[i] != NONE )
@@ -213,25 +213,25 @@ BOOL CInterpretHandler::CommonInstruction(VMTable* table,char* asmtext,int len)
 		if( i >= table->OperandNum )
 			break;
 		sizeidx = GetScalestr(table->bitnum[i],scalestr);
-		if( table->optype[i] == MEMTYPE )//ÄÚ´æÊı
-		{	//²Ù×÷ÊıË³Ğòeax,ecx,edx
-			sprintf_s(stroperand,1024,"%s%s ptr %s[%s],",stroperand,scalestr,GetSegStr(table->Segment),vregname[2][i]);//µÃµ½²ÎÊı
+		if( table->optype[i] == MEMTYPE )//å†…å­˜æ•°
+		{	//æ“ä½œæ•°é¡ºåºeax,ecx,edx
+			sprintf_s(stroperand,1024,"%s%s ptr %s[%s],",stroperand,scalestr,GetSegStr(table->Segment),vregname[2][i]);//å¾—åˆ°å‚æ•°
 		}
-		else//Á¢¼´ÊıºÍ¼Ä´æÆ÷
+		else//ç«‹å³æ•°å’Œå¯„å­˜å™¨
 		{
-			sprintf_s(stroperand,1024,"%s%s,",stroperand,vregname[sizeidx][i]);//µÃµ½²ÎÊı
+			sprintf_s(stroperand,1024,"%s%s,",stroperand,vregname[sizeidx][i]);//å¾—åˆ°å‚æ•°
 		}
 	}
 	if( table->OperandNum > 0)
-		stroperand[strlen(stroperand)-1] = '\0';//È¥µô¶ººÅ
+		stroperand[strlen(stroperand)-1] = '\0';//å»æ‰é€—å·
 
 	RestoreFlag(asmtext,len);
-	sprintf_s(asmtext,len,"%s%s %s\n",asmtext,table->strInstruction,stroperand);//ÕæÕıÖ´ĞĞµÄÖ¸Áî
+	sprintf_s(asmtext,len,"%s%s %s\n",asmtext,table->strInstruction,stroperand);//çœŸæ­£æ‰§è¡Œçš„æŒ‡ä»¤
 	SaveFlag(asmtext,len);
 	return TRUE;
 }
 
-// »ñµÃ¶ÎÇ°×º
+// è·å¾—æ®µå‰ç¼€
 char* CInterpretHandler::GetSegStr(int Segment)
 {
 	static char segstr[10] = "";
@@ -242,7 +242,7 @@ char* CInterpretHandler::GetSegStr(int Segment)
 		strcpy_s(segstr,10,"gs:");
 	return segstr;
 }
-// Ê×ÏÈÖ´ĞĞµÄÖ¸Áî
+// é¦–å…ˆæ‰§è¡Œçš„æŒ‡ä»¤
 BOOL CInterpretHandler::InterpretvBegin(VMTable* table,char* asmtext,int len)
 {
 	//popfd
@@ -254,7 +254,7 @@ BOOL CInterpretHandler::InterpretvBegin(VMTable* table,char* asmtext,int len)
 	//pop eax
 	int s_reg[8] = {RT_EFlag,RT_Ebp,RT_Edi,RT_Esi,RT_Edx,RT_Ecx,RT_Ebx,RT_Eax};
 
-	// µ¯³ö¼Ä´æÆ÷
+	// å¼¹å‡ºå¯„å­˜å™¨
 	for(int i = 0; i < 8;i++)
 	{
 		sprintf_s(asmtext,len,"%smov eax,dword ptr [ebp]\n",asmtext);
@@ -262,28 +262,28 @@ BOOL CInterpretHandler::InterpretvBegin(VMTable* table,char* asmtext,int len)
 		
 		sprintf_s(asmtext,len,"%sadd ebp,4\n",asmtext);
 	}
-	// ÊÍ·ÅÎ±µØÖ·¶ÑÕ»
+	// é‡Šæ”¾ä¼ªåœ°å€å †æ ˆ
 	sprintf_s(asmtext,len,"%sadd ebp,4\n",asmtext);
-	sprintf_s(asmtext,len,"%smov [edi+%02x],ebp\n",asmtext,GetRegisterOffset(RT_Esp));//½«ebp(¼´ÕæÕıesp)±£´æµ½espµÄµØÖ·
+	sprintf_s(asmtext,len,"%smov [edi+%02x],ebp\n",asmtext,GetRegisterOffset(RT_Esp));//å°†ebp(å³çœŸæ­£esp)ä¿å­˜åˆ°espçš„åœ°å€
 
 	return FALSE;
 }
 
-// Ìø×ªµ½ÕæÊµÖ¸Áî
+// è·³è½¬åˆ°çœŸå®æŒ‡ä»¤
 BOOL CInterpretHandler::InterpretvtoReal(VMTable* table,char* asmtext,int len)
 {
 	int s_reg[9] = {RT_Esp,RT_EFlag,RT_Ebp,RT_Edi,RT_Esi,RT_Edx,RT_Ecx,RT_Ebx,RT_Eax};
-	//Ö®Ç°ÓĞÒ»¸öpushimm32 xxxxµØÖ·
+	//ä¹‹å‰æœ‰ä¸€ä¸ªpushimm32 xxxxåœ°å€
 
-	//°ÑÕâ¸öÖµ·ÅÈçÕæÊµ¶ÑÕ»
-	sprintf_s(asmtext,len,"%smov eax,dword ptr [esi]\n",asmtext);//ÊÍ·Å4×Ö½Ú¶ÑÕ»
+	//æŠŠè¿™ä¸ªå€¼æ”¾å¦‚çœŸå®å †æ ˆ
+	sprintf_s(asmtext,len,"%smov eax,dword ptr [esi]\n",asmtext);//é‡Šæ”¾4å­—èŠ‚å †æ ˆ
 	sprintf_s(asmtext,len,"%sadd esi,4\n",asmtext);
 	sprintf_s(asmtext,len,"%ssub ebp,4\n",asmtext);
-	sprintf_s(asmtext,len,"%smov dword ptr [ebp],eax\n",asmtext);//eax,µÚ1¸ö²ÎÊı
+	sprintf_s(asmtext,len,"%smov dword ptr [ebp],eax\n",asmtext);//eax,ç¬¬1ä¸ªå‚æ•°
 
-	sprintf_s(asmtext,len,"%smov [edi+%02x],ebp\n",asmtext,GetRegisterOffset(RT_Esp));//½«ebp(¼´ÕæÕıesp)±£´æµ½espµÄµØÖ·
+	sprintf_s(asmtext,len,"%smov [edi+%02x],ebp\n",asmtext,GetRegisterOffset(RT_Esp));//å°†ebp(å³çœŸæ­£esp)ä¿å­˜åˆ°espçš„åœ°å€
 
-	// µ¯³ö¼Ä´æÆ÷
+	// å¼¹å‡ºå¯„å­˜å™¨
 	for(int i = 0; i < 9;i++)
 	{
 		sprintf_s(asmtext,len,"%spush [edi+%02X]\n",asmtext,GetRegisterOffset(s_reg[i]));
@@ -297,7 +297,7 @@ BOOL CInterpretHandler::InterpretvtoReal(VMTable* table,char* asmtext,int len)
 	sprintf_s(asmtext,len,"%spop ebp\n",asmtext);
 	sprintf_s(asmtext,len,"%spopfd\n",asmtext);
 	sprintf_s(asmtext,len,"%spop esp\n",asmtext);
-	//·µ»Ø
+	//è¿”å›
 	sprintf_s(asmtext,len,"%sretn\n",asmtext);
 	return FALSE;
 }
@@ -305,7 +305,7 @@ BOOL CInterpretHandler::InterpretvtoReal(VMTable* table,char* asmtext,int len)
 //		sub		ebp,4
 //		mov		eax,[eax]
 //		mov		word ptr [ebp],ax
-//½âÊÍpush
+//è§£é‡Špush
 BOOL CInterpretHandler::InterpretPush(VMTable* table,char* asmtext,int len)
 {
 	char scalestr[6] = {0};
@@ -326,10 +326,10 @@ BOOL CInterpretHandler::InterpretPush(VMTable* table,char* asmtext,int len)
 		strcpy_s(scalestr,6,"dword");
 	}
 
-	sprintf_s(asmtext,len,"%ssub ebp,%d\n",asmtext,table->bitnum[0] / 8);//´Ó¶ÑÕ»ÖĞÌÚ³ö¿Õ¼ä
+	sprintf_s(asmtext,len,"%ssub ebp,%d\n",asmtext,table->bitnum[0] / 8);//ä»å †æ ˆä¸­è…¾å‡ºç©ºé—´
 	if( table->optype[0] == MEMTYPE )
 	{
-		sprintf_s(asmtext,len,"%smov %s,%s ptr %s[eax]\n",asmtext,vregname[sizeidx][RT_Eax],scalestr,GetSegStr(table->Segment));//µÃµ½ÄÚ´æÊıµÄÖµ
+		sprintf_s(asmtext,len,"%smov %s,%s ptr %s[eax]\n",asmtext,vregname[sizeidx][RT_Eax],scalestr,GetSegStr(table->Segment));//å¾—åˆ°å†…å­˜æ•°çš„å€¼
 	}
 	sprintf_s(asmtext,len,"%smov %s ptr [ebp],%s\n",asmtext,scalestr,vregname[sizeidx][RT_Eax]);
 	return TRUE;
@@ -337,7 +337,7 @@ BOOL CInterpretHandler::InterpretPush(VMTable* table,char* asmtext,int len)
 //		mov		eax,dword ptr [ebp]
 //		add		ebp,4
 //		mov		eax,[eax]
-//½âÊÍpop
+//è§£é‡Špop
 BOOL CInterpretHandler::InterpretPop(VMTable* table,char* asmtext,int len)
 {
 	char scalestr[6] = {0};
@@ -357,63 +357,63 @@ BOOL CInterpretHandler::InterpretPop(VMTable* table,char* asmtext,int len)
 		sizeidx = 2;
 		strcpy_s(scalestr,6,"dword");
 	}
-	sprintf_s(asmtext,len,"%smov %s,%s ptr [ebp]\n",asmtext,vregname[sizeidx][RT_Ecx],scalestr);//µÃµ½¶ÑÕ»µÄÖµ
-	sprintf_s(asmtext,len,"%sadd ebp,%d\n",asmtext,table->bitnum[0] / 8);//ÊÍ·Å4×Ö½Ú¶ÑÕ»
+	sprintf_s(asmtext,len,"%smov %s,%s ptr [ebp]\n",asmtext,vregname[sizeidx][RT_Ecx],scalestr);//å¾—åˆ°å †æ ˆçš„å€¼
+	sprintf_s(asmtext,len,"%sadd ebp,%d\n",asmtext,table->bitnum[0] / 8);//é‡Šæ”¾4å­—èŠ‚å †æ ˆ
 	if( table->optype[0] == MEMTYPE )
 	{
-		sprintf_s(asmtext,len,"%smov %s,%s ptr %s[eax]\n",asmtext,vregname[sizeidx][RT_Eax],scalestr,GetSegStr(table->Segment));//µÃµ½ÄÚ´æÊıµÄÖµ
+		sprintf_s(asmtext,len,"%smov %s,%s ptr %s[eax]\n",asmtext,vregname[sizeidx][RT_Eax],scalestr,GetSegStr(table->Segment));//å¾—åˆ°å†…å­˜æ•°çš„å€¼
 	}
-	sprintf_s(asmtext,len,"%smov eax,ecx\n",asmtext);//½«Öµ¸ømem(Ö»ÓĞmem£¬ÒòÎªÎŞÂÛÊÇreg»¹ÊÇmemÔÚvmÖĞ¶¼ÊÇÄÚ´æµØÖ·)
+	sprintf_s(asmtext,len,"%smov eax,ecx\n",asmtext);//å°†å€¼ç»™mem(åªæœ‰memï¼Œå› ä¸ºæ— è®ºæ˜¯regè¿˜æ˜¯memåœ¨vmä¸­éƒ½æ˜¯å†…å­˜åœ°å€)
 	return TRUE;
 }
 
-//½âÊÍpushfd
+//è§£é‡Špushfd
 BOOL CInterpretHandler::InterpretPushfd(VMTable* table,char* asmtext,int len)
 {
-	sprintf_s(asmtext,len,"%ssub ebp,4\n",asmtext);//´Ó¶ÑÕ»ÖĞÈ¡µÃ²ÎÊı
-	sprintf_s(asmtext,len,"%smov eax,[edi+%02x]\n",asmtext,GetRegisterOffset(RT_EFlag));//µÃµ½EFL
-	sprintf_s(asmtext,len,"%smov dword ptr [ebp],eax\n",asmtext);//¸³ÖµEFL¼Ä´æÆ÷
+	sprintf_s(asmtext,len,"%ssub ebp,4\n",asmtext);//ä»å †æ ˆä¸­å–å¾—å‚æ•°
+	sprintf_s(asmtext,len,"%smov eax,[edi+%02x]\n",asmtext,GetRegisterOffset(RT_EFlag));//å¾—åˆ°EFL
+	sprintf_s(asmtext,len,"%smov dword ptr [ebp],eax\n",asmtext);//èµ‹å€¼EFLå¯„å­˜å™¨
 	return TRUE;
 }
-//½âÊÍpopfd
+//è§£é‡Špopfd
 BOOL CInterpretHandler::InterpretPopfd(VMTable* table,char* asmtext,int len)
 {
-	sprintf_s(asmtext,len,"%smov eax,dword ptr [ebp]\n",asmtext);//¸³ÖµEFL¼Ä´æÆ÷
-	sprintf_s(asmtext,len,"%sadd ebp,4\n",asmtext);//ÊÍ·Å¶ÑÕ»
-	sprintf_s(asmtext,len,"%smov [edi+%02x],eax\n",asmtext,GetRegisterOffset(RT_EFlag));//ÉèÖÃEFL
+	sprintf_s(asmtext,len,"%smov eax,dword ptr [ebp]\n",asmtext);//èµ‹å€¼EFLå¯„å­˜å™¨
+	sprintf_s(asmtext,len,"%sadd ebp,4\n",asmtext);//é‡Šæ”¾å †æ ˆ
+	sprintf_s(asmtext,len,"%smov [edi+%02x],eax\n",asmtext,GetRegisterOffset(RT_EFlag));//è®¾ç½®EFL
 	return TRUE;
 }
 
 
-// ½âÊÍpushad
+// è§£é‡Špushad
 BOOL CInterpretHandler::InterpretPushad(VMTable* table,char* asmtext,int len)
 {
 	for(int i = 0 ; i < 8;i++)
 	{
-		sprintf_s(asmtext,len,"%ssub ebp,4\n",asmtext);//´Ó¶ÑÕ»ÖĞÈ¡µÃ²ÎÊı
+		sprintf_s(asmtext,len,"%ssub ebp,4\n",asmtext);//ä»å †æ ˆä¸­å–å¾—å‚æ•°
 		sprintf_s(asmtext,len,"%smov eax,[edi+%02x]\n",asmtext,GetRegisterOffset(i));//i = enum RegType
 		sprintf_s(asmtext,len,"%smov dword ptr [ebp],eax\n",asmtext);//push
 	}
 	return TRUE;
 }
 
-// ½âÊÍpopad
+// è§£é‡Špopad
 BOOL CInterpretHandler::InterpretPopad(VMTable* table,char* asmtext,int len)
 {
 	for(int i = 8 ; i > 0;i--)
 	{
 		sprintf_s(asmtext,len,"%smov eax,dword ptr [ebp]\n",asmtext);//
-		sprintf_s(asmtext,len,"%sadd ebp,4\n",asmtext);//ÊÍ·Å¶ÑÕ»
+		sprintf_s(asmtext,len,"%sadd ebp,4\n",asmtext);//é‡Šæ”¾å †æ ˆ
 		sprintf_s(asmtext,len,"%smov [edi+%02x],eax\n",asmtext,GetRegisterOffset(i));//i = enum RegType
 	}
 	return TRUE;
 }
 
-// ½âÊÍenter
+// è§£é‡Šenter
 //push ebp
 //mov ebp,esp
-//sub esp,(L - 1) * 4 ; L > 0²ÅÓĞÕâ²½²Ù×÷£¬ÓÃÀ´´æ´¢Ç¶Ì×µÄL - 1¸ö×Ó¹ı³ÌµÄÕ»¿ò¼ÜÖ¸Õë£¨×¢ÒâÊÇÖ¸Õë£©
-//push ebp ; µ±Ç°¹ı³ÌµÄÕ»¿ò¼ÜÖ¸Õë
+//sub esp,(L - 1) * 4 ; L > 0æ‰æœ‰è¿™æ­¥æ“ä½œï¼Œç”¨æ¥å­˜å‚¨åµŒå¥—çš„L - 1ä¸ªå­è¿‡ç¨‹çš„æ ˆæ¡†æ¶æŒ‡é’ˆï¼ˆæ³¨æ„æ˜¯æŒ‡é’ˆï¼‰
+//push ebp ; å½“å‰è¿‡ç¨‹çš„æ ˆæ¡†æ¶æŒ‡é’ˆ
 //sub esp,N
 BOOL CInterpretHandler::InterpretEnter(VMTable* table,char* asmtext,int len)
 {
@@ -426,13 +426,13 @@ BOOL CInterpretHandler::InterpretEnter(VMTable* table,char* asmtext,int len)
 	sprintf_s(asmtext,len,"%smov edx,ebp\n",asmtext);//
 	sprintf_s(asmtext,len,"%smov [edi+%02x],edx\n",asmtext,GetRegisterOffset(RT_Esp));//
 	
-	//sub esp,(L - 1) * 4 ; L > 0²ÅÓĞÕâ²½²Ù×÷
+	//sub esp,(L - 1) * 4 ; L > 0æ‰æœ‰è¿™æ­¥æ“ä½œ
 	sprintf_s(asmtext,len,"%smov edx,ebp\n",asmtext);//
-	sprintf_s(asmtext,len,"%slea ecx,[ecx*4]\n",asmtext);//ecx = µÚ2¸ö²ÎÊı
-	sprintf_s(asmtext,len,"%ssub edx,ecx\n",asmtext);//²»¹ÜÊÇ²»ÊÇ0¶¼¼õÈ¥
-	sprintf_s(asmtext,len,"%ssub edx,4\n",asmtext);//ÔÙ¼õ1¸ö4
-	sprintf_s(asmtext,len,"%stest ecx,ecx\n",asmtext);//²âÊÔÊÇ·ñÎª0
-	sprintf_s(asmtext,len,"%scmovne ebp,edx\n",asmtext);//Èç¹û²»Îª0¾Í¸³Öµ¼õÈ¥ºóµÄ½á¹û
+	sprintf_s(asmtext,len,"%slea ecx,[ecx*4]\n",asmtext);//ecx = ç¬¬2ä¸ªå‚æ•°
+	sprintf_s(asmtext,len,"%ssub edx,ecx\n",asmtext);//ä¸ç®¡æ˜¯ä¸æ˜¯0éƒ½å‡å»
+	sprintf_s(asmtext,len,"%ssub edx,4\n",asmtext);//å†å‡1ä¸ª4
+	sprintf_s(asmtext,len,"%stest ecx,ecx\n",asmtext);//æµ‹è¯•æ˜¯å¦ä¸º0
+	sprintf_s(asmtext,len,"%scmovne ebp,edx\n",asmtext);//å¦‚æœä¸ä¸º0å°±èµ‹å€¼å‡å»åçš„ç»“æœ
 
 	//push ebp
 	sprintf_s(asmtext,len,"%smov edx,[edi+%02x]\n",asmtext,GetRegisterOffset(RT_Ebp));//
@@ -440,11 +440,11 @@ BOOL CInterpretHandler::InterpretEnter(VMTable* table,char* asmtext,int len)
 	sprintf_s(asmtext,len,"%smov dword ptr [ebp],edx\n",asmtext);//push ebp
 
 	//sub esp,N
-	sprintf_s(asmtext,len,"%ssub ebp,eax\n",asmtext);//eax,µÚ1¸ö²ÎÊı
+	sprintf_s(asmtext,len,"%ssub ebp,eax\n",asmtext);//eax,ç¬¬1ä¸ªå‚æ•°
 	return TRUE;
 }
 
-// ½âÊÍleave
+// è§£é‡Šleave
 // mov ebp,esp
 // pop ebp
 BOOL CInterpretHandler::InterpretLeave(VMTable* table,char* asmtext,int len)
@@ -454,33 +454,33 @@ BOOL CInterpretHandler::InterpretLeave(VMTable* table,char* asmtext,int len)
 	sprintf_s(asmtext,len,"%smov [edi+%02x],edx\n",asmtext,GetRegisterOffset(RT_Esp));//
 	//pop ebp
 	sprintf_s(asmtext,len,"%smov eax,[ebp]\n",asmtext);//
-	sprintf_s(asmtext,len,"%sadd ebp,4\n",asmtext);//ÊÍ·Å¶ÑÕ»
+	sprintf_s(asmtext,len,"%sadd ebp,4\n",asmtext);//é‡Šæ”¾å †æ ˆ
 	sprintf_s(asmtext,len,"%smov [edi+%02x],eax\n",asmtext,GetRegisterOffset(RT_Ebp));//
 	return TRUE;
 }
 ///////////////////////////////////////////////////
-// ½âÊÍjmp
+// è§£é‡Šjmp
 BOOL CInterpretHandler::InterpretJMP(VMTable* table,char* asmtext,int len)
 {
-	//jmpÍâ²¿µØÖ·
+	//jmpå¤–éƒ¨åœ°å€
 	sprintf_s(asmtext,len,"%smov esi,eax\n",asmtext);//
 	sprintf_s(asmtext,len,"%sadd esp,4\n",asmtext);//
 	return FALSE;
 
 	//int s_reg[9] = {RT_Esp,RT_EFlag,RT_Ebp,RT_Edi,RT_Esi,RT_Edx,RT_Ecx,RT_Ebx,RT_Eax};
 	//sprintf_s(asmtext,len,"%smov edx,[esi]\n",asmtext);
-	//sprintf_s(asmtext,len,"%ssub ebp,4\n",asmtext);//4×Ö½Ú¿Õ¼ä
-	//sprintf_s(asmtext,len,"%smov [ebp],edx\n",asmtext);//·µ»ØµØÖ·
-	//sprintf_s(asmtext,len,"%ssub ebp,4\n",asmtext);//4×Ö½Ú¿Õ¼ä
+	//sprintf_s(asmtext,len,"%ssub ebp,4\n",asmtext);//4å­—èŠ‚ç©ºé—´
+	//sprintf_s(asmtext,len,"%smov [ebp],edx\n",asmtext);//è¿”å›åœ°å€
+	//sprintf_s(asmtext,len,"%ssub ebp,4\n",asmtext);//4å­—èŠ‚ç©ºé—´
 	//if( table->optype[0] == MEMTYPE )
 	//{
-	//	sprintf_s(asmtext,len,"%smov eax,dword ptr [eax]\n",asmtext);//µÃµ½ÄÚ´æÊıµÄÖµ
+	//	sprintf_s(asmtext,len,"%smov eax,dword ptr [eax]\n",asmtext);//å¾—åˆ°å†…å­˜æ•°çš„å€¼
 	//}
-	//sprintf_s(asmtext,len,"%smov [ebp],eax\n",asmtext);//CALLµÄµØÖ· eax = µÚÒ»¸ö²Ù×÷Êı
+	//sprintf_s(asmtext,len,"%smov [ebp],eax\n",asmtext);//CALLçš„åœ°å€ eax = ç¬¬ä¸€ä¸ªæ“ä½œæ•°
 
-	//sprintf_s(asmtext,len,"%smov [edi+%02x],ebp\n",asmtext,GetRegisterOffset(RT_Esp));//½«ebp(¼´ÕæÕıesp)±£´æµ½espµÄµØÖ·
+	//sprintf_s(asmtext,len,"%smov [edi+%02x],ebp\n",asmtext,GetRegisterOffset(RT_Esp));//å°†ebp(å³çœŸæ­£esp)ä¿å­˜åˆ°espçš„åœ°å€
 
-	//// µ¯³ö¼Ä´æÆ÷
+	//// å¼¹å‡ºå¯„å­˜å™¨
 	//for(int i = 0; i < 9;i++)
 	//{
 	//	sprintf_s(asmtext,len,"%spush [edi+%02X]\n",asmtext,GetRegisterOffset(s_reg[i]));
@@ -494,41 +494,41 @@ BOOL CInterpretHandler::InterpretJMP(VMTable* table,char* asmtext,int len)
 	//sprintf_s(asmtext,len,"%spop ebp\n",asmtext);
 	//sprintf_s(asmtext,len,"%spopfd\n",asmtext);
 	//sprintf_s(asmtext,len,"%spop esp\n",asmtext);
-	////·µ»Ø
+	////è¿”å›
 	//sprintf_s(asmtext,len,"%sretn\n",asmtext);
-	//return FALSE;//²»»Ö¸´ÁË
+	//return FALSE;//ä¸æ¢å¤äº†
 }
-// ½âÊÍjcxz\jecxz
+// è§£é‡Šjcxz\jecxz
 BOOL CInterpretHandler::InterpretJCXZ(VMTable* table,char* asmtext,int len)
 {
 	sprintf_s(asmtext,len,"%stest ecx,ecx\n",asmtext);//
-	sprintf_s(asmtext,len,"%sCMOVZ esi,eax\n",asmtext);//eaxÎªµÚ1¸ö²ÎÊı
+	sprintf_s(asmtext,len,"%sCMOVZ esi,eax\n",asmtext);//eaxä¸ºç¬¬1ä¸ªå‚æ•°
 	sprintf_s(asmtext,len,"%sadd esp,4\n",asmtext);//
 	return FALSE;
 }	
-// ½âÊÍjcc
+// è§£é‡Šjcc
 BOOL CInterpretHandler::InterpretJCC(VMTable* table,char* asmtext,int len)
 {
-	char strPostfix[16] = {0};//Ìõ¼şºó×º
+	char strPostfix[16] = {0};//æ¡ä»¶åç¼€
 	strcpy_s(strPostfix,16,&table->strInstruction[1]);
 	sprintf_s(asmtext,len,"%scmov%s esi,[esp]\n",asmtext,strPostfix);//
 	sprintf_s(asmtext,len,"%sadd esp,4\n",asmtext);//
 	return FALSE;
 }
-// ½âÊÍloope
+// è§£é‡Šloope
 BOOL CInterpretHandler::InterpretLoope(VMTable* table,char* asmtext,int len)
 {
 	sprintf_s(asmtext,len,"%spushfd\n",asmtext);//
 	sprintf_s(asmtext,len,"%stest ecx,ecx\n",asmtext);//
-	sprintf_s(asmtext,len,"%scmovne edx,eax\n",asmtext);//eaxÎªµÚ1¸ö²ÎÊı
+	sprintf_s(asmtext,len,"%scmovne edx,eax\n",asmtext);//eaxä¸ºç¬¬1ä¸ªå‚æ•°
 	sprintf_s(asmtext,len,"%spopfd\n",asmtext);//
 	sprintf_s(asmtext,len,"%scmovne edx, esi\n",asmtext);//
-	sprintf_s(asmtext,len,"%scmove edx,eax\n",asmtext);//eaxÎªµÚ1¸ö²ÎÊı
-	sprintf_s(asmtext,len,"%sadd ebp,4\n",asmtext);//ÊÍ·Å¶ÑÕ»
+	sprintf_s(asmtext,len,"%scmove edx,eax\n",asmtext);//eaxä¸ºç¬¬1ä¸ªå‚æ•°
+	sprintf_s(asmtext,len,"%sadd ebp,4\n",asmtext);//é‡Šæ”¾å †æ ˆ
 	return FALSE;
 }
 
-// ½âÊÍ·µ»Ø
+// è§£é‡Šè¿”å›
 BOOL CInterpretHandler::InterpretRetn(VMTable* table,char* asmtext,int len)
 {
 	int s_reg[9] = {RT_Esp,RT_EFlag,RT_Ebp,RT_Edi,RT_Esi,RT_Edx,RT_Ecx,RT_Ebx,RT_Eax};
@@ -536,11 +536,11 @@ BOOL CInterpretHandler::InterpretRetn(VMTable* table,char* asmtext,int len)
 	if( table->OperandNum == 1 )//retn xxx
 	{
 		sprintf_s(asmtext,len,"%smov edx,ebp\n",asmtext);
-		sprintf_s(asmtext,len,"%sadd ebp,eax\n",asmtext);//retn xx,ÏÈ·ÅÉÏÈ¥
-		sprintf_s(asmtext,len,"%smov [ebp],edx\n",asmtext);//ÔÙPUSH½øretnµØÖ·
-		sprintf_s(asmtext,len,"%smov [edi+%02x],ebp\n",asmtext,GetRegisterOffset(RT_Esp));//½«ebp(¼´ÕæÕıesp)±£´æµ½espµÄµØÖ·
+		sprintf_s(asmtext,len,"%sadd ebp,eax\n",asmtext);//retn xx,å…ˆæ”¾ä¸Šå»
+		sprintf_s(asmtext,len,"%smov [ebp],edx\n",asmtext);//å†PUSHè¿›retnåœ°å€
+		sprintf_s(asmtext,len,"%smov [edi+%02x],ebp\n",asmtext,GetRegisterOffset(RT_Esp));//å°†ebp(å³çœŸæ­£esp)ä¿å­˜åˆ°espçš„åœ°å€
 	}
-	// µ¯³ö¼Ä´æÆ÷
+	// å¼¹å‡ºå¯„å­˜å™¨
 	for(int i = 0; i < 9;i++)
 	{
 		sprintf_s(asmtext,len,"%spush [edi+%02X]\n",asmtext,GetRegisterOffset(s_reg[i]));
@@ -555,7 +555,7 @@ BOOL CInterpretHandler::InterpretRetn(VMTable* table,char* asmtext,int len)
 	sprintf_s(asmtext,len,"%spopfd\n",asmtext);
 	sprintf_s(asmtext,len,"%spop esp\n",asmtext);
 
-	//·µ»Ø
+	//è¿”å›
 	sprintf_s(asmtext,len,"%sretn\n",asmtext);
 
 	return FALSE;
@@ -563,24 +563,24 @@ BOOL CInterpretHandler::InterpretRetn(VMTable* table,char* asmtext,int len)
 	//sprintf_s(asmtext,len,"%spop esi\n",asmtext);
 	//return FALSE;
 }
-// ½âÊÍ×Óµ÷ÓÃ
+// è§£é‡Šå­è°ƒç”¨
 BOOL CInterpretHandler::InterpretCall(VMTable* table,char* asmtext,int len)
 {
 	int s_reg[9] = {RT_Esp,RT_EFlag,RT_Ebp,RT_Edi,RT_Esi,RT_Edx,RT_Ecx,RT_Ebx,RT_Eax};
 	
 	sprintf_s(asmtext,len,"%smov edx,[esi]\n",asmtext);
-	sprintf_s(asmtext,len,"%ssub ebp,4\n",asmtext);//4×Ö½Ú¿Õ¼ä
-	sprintf_s(asmtext,len,"%smov [ebp],edx\n",asmtext);//·µ»ØµØÖ·
-	sprintf_s(asmtext,len,"%ssub ebp,4\n",asmtext);//4×Ö½Ú¿Õ¼ä
+	sprintf_s(asmtext,len,"%ssub ebp,4\n",asmtext);//4å­—èŠ‚ç©ºé—´
+	sprintf_s(asmtext,len,"%smov [ebp],edx\n",asmtext);//è¿”å›åœ°å€
+	sprintf_s(asmtext,len,"%ssub ebp,4\n",asmtext);//4å­—èŠ‚ç©ºé—´
 	if( table->optype[0] == MEMTYPE )
 	{
-		sprintf_s(asmtext,len,"%smov eax,dword ptr [eax]\n",asmtext);//µÃµ½ÄÚ´æÊıµÄÖµ
+		sprintf_s(asmtext,len,"%smov eax,dword ptr [eax]\n",asmtext);//å¾—åˆ°å†…å­˜æ•°çš„å€¼
 	}
-	sprintf_s(asmtext,len,"%smov [ebp],eax\n",asmtext);//CALLµÄµØÖ· eax = µÚÒ»¸ö²Ù×÷Êı
+	sprintf_s(asmtext,len,"%smov [ebp],eax\n",asmtext);//CALLçš„åœ°å€ eax = ç¬¬ä¸€ä¸ªæ“ä½œæ•°
 
-	sprintf_s(asmtext,len,"%smov [edi+%02x],ebp\n",asmtext,GetRegisterOffset(RT_Esp));//½«ebp(¼´ÕæÕıesp)±£´æµ½espµÄµØÖ·
+	sprintf_s(asmtext,len,"%smov [edi+%02x],ebp\n",asmtext,GetRegisterOffset(RT_Esp));//å°†ebp(å³çœŸæ­£esp)ä¿å­˜åˆ°espçš„åœ°å€
 
-	// µ¯³ö¼Ä´æÆ÷
+	// å¼¹å‡ºå¯„å­˜å™¨
 	for(int i = 0; i < 9;i++)
 	{
 		sprintf_s(asmtext,len,"%spush [edi+%02X]\n",asmtext,GetRegisterOffset(s_reg[i]));
@@ -594,19 +594,19 @@ BOOL CInterpretHandler::InterpretCall(VMTable* table,char* asmtext,int len)
 	sprintf_s(asmtext,len,"%spop ebp\n",asmtext);
 	sprintf_s(asmtext,len,"%spopfd\n",asmtext);
 	sprintf_s(asmtext,len,"%spop esp\n",asmtext);
-	//·µ»Ø
+	//è¿”å›
 	sprintf_s(asmtext,len,"%sretn\n",asmtext);
-	return FALSE;//²»»Ö¸´ÁË
+	return FALSE;//ä¸æ¢å¤äº†
 }
-// ½âÊÍ±£»¤¶ÑÕ»Handler
+// è§£é‡Šä¿æŠ¤å †æ ˆHandler
 BOOL CInterpretHandler::InterpretSaveEsp(VMTable* table,char* asmtext,int len)
 {
-	sprintf_s(asmtext,len,"%smov [edi+%02x],ebp\n",asmtext,GetRegisterOffset(RT_Esp));//½«ebp(¼´ÕæÕıesp)±£´æµ½espµÄµØÖ·
+	sprintf_s(asmtext,len,"%smov [edi+%02x],ebp\n",asmtext,GetRegisterOffset(RT_Esp));//å°†ebp(å³çœŸæ­£esp)ä¿å­˜åˆ°espçš„åœ°å€
 	return FALSE;
 }
-// ½âÊÍ»Ö¸´¶ÑÕ»Handler
+// è§£é‡Šæ¢å¤å †æ ˆHandler
 BOOL CInterpretHandler::InterpretRestoreEsp(VMTable* table,char* asmtext,int len)
 {
-	sprintf_s(asmtext,len,"%smov ebp,[edi+%02x]\n",asmtext,GetRegisterOffset(RT_Esp));//½«vmespµÄÖµ»Ö¸´µ½ebp(¼´ÕæÕıesp)
+	sprintf_s(asmtext,len,"%smov ebp,[edi+%02x]\n",asmtext,GetRegisterOffset(RT_Esp));//å°†vmespçš„å€¼æ¢å¤åˆ°ebp(å³çœŸæ­£esp)
 	return FALSE;
 }  

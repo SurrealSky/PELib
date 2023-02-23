@@ -1,11 +1,11 @@
-#include"../PELib.h"
+ï»¿#include"../PELib.h"
 #include<time.h>
 #include "vmdisasm.h"
 
-// ÎªÒ»¸öË÷ÒıÊı×éËæ»úÅÅĞò.
+// ä¸ºä¸€ä¸ªç´¢å¼•æ•°ç»„éšæœºæ’åº.
 //void RandListIdx(std::vector<int> &idx,int cout)
 //{
-//	////ÔİÊ±²»Ëæ»ú
+//	////æš‚æ—¶ä¸éšæœº
 //	//for(int i=0;i<cout;i++)
 //	//{
 //	//	idx[i]=i;
@@ -27,28 +27,28 @@
 //				break;
 //			}
 //		}
-//		if( !NotComplete )//È«²¿Íê³É
+//		if( !NotComplete )//å…¨éƒ¨å®Œæˆ
 //			return;
 //		int nrand = rand() % cout;
-//		//if( nrand == 0)//6.9.²»ÄÜÎª0,0Áô¸øÒ»¸öNULLµÄ¿Õ¼ä
+//		//if( nrand == 0)//6.9.ä¸èƒ½ä¸º0,0ç•™ç»™ä¸€ä¸ªNULLçš„ç©ºé—´
 //		//	break;
-//		BOOL NoSame = FALSE;//Ä¬ÈÏÎªÃ»ÓĞÏàÍ¬µÄ
+//		BOOL NoSame = FALSE;//é»˜è®¤ä¸ºæ²¡æœ‰ç›¸åŒçš„
 //		for( int i = 0; i < cout; i++ )
 //		{
-//			if( IsUsed[i] && nrand == idx[i] )//Èç¹û·ÖÅäÁË²¢ÇÒÉú³ÉµÄÊıÏàµÈ
+//			if( IsUsed[i] && nrand == idx[i] )//å¦‚æœåˆ†é…äº†å¹¶ä¸”ç”Ÿæˆçš„æ•°ç›¸ç­‰
 //			{
 //				NoSame = TRUE;
 //				break;
 //			}
 //		}
-//		if( NoSame )//Èç¹ûÓĞÏàÍ¬µÄ
+//		if( NoSame )//å¦‚æœæœ‰ç›¸åŒçš„
 //			continue;
 //		for( int i = 0; i < cout; i++ )
 //		{
-//			if( !IsUsed[i]  )//Èç¹ûÃ»ÓĞ·ÖÅä
+//			if( !IsUsed[i]  )//å¦‚æœæ²¡æœ‰åˆ†é…
 //			{
 //				idx[i] = nrand;
-//				IsUsed[i] = TRUE;//ÉèÎªÒÑ·ÖÅä
+//				IsUsed[i] = TRUE;//è®¾ä¸ºå·²åˆ†é…
 //				break;
 //			}
 //		}
@@ -58,7 +58,7 @@
 
 void RandListIdx(int *idx,int cout)
 {
-	//ÔİÊ±²»Ëæ»ú
+	//æš‚æ—¶ä¸éšæœº
 	for(int i=0;i<cout;i++)
 	{
 		*(idx+i)=i;
@@ -80,28 +80,28 @@ void RandListIdx(int *idx,int cout)
 	//			break;
 	//		}
 	//	}
-	//	if( !NotComplete )//È«²¿Íê³É
+	//	if( !NotComplete )//å…¨éƒ¨å®Œæˆ
 	//		return;
 	//	int nrand = rand() % cout;
-	//	//if( nrand == 0)//6.9.²»ÄÜÎª0,0Áô¸øÒ»¸öNULLµÄ¿Õ¼ä
+	//	//if( nrand == 0)//6.9.ä¸èƒ½ä¸º0,0ç•™ç»™ä¸€ä¸ªNULLçš„ç©ºé—´
 	//	//	break;
-	//	BOOL NoSame = FALSE;//Ä¬ÈÏÎªÃ»ÓĞÏàÍ¬µÄ
+	//	BOOL NoSame = FALSE;//é»˜è®¤ä¸ºæ²¡æœ‰ç›¸åŒçš„
 	//	for( int i = 0; i < cout; i++ )
 	//	{
-	//		if( IsUsed[i] && nrand == idx[i] )//Èç¹û·ÖÅäÁË²¢ÇÒÉú³ÉµÄÊıÏàµÈ
+	//		if( IsUsed[i] && nrand == idx[i] )//å¦‚æœåˆ†é…äº†å¹¶ä¸”ç”Ÿæˆçš„æ•°ç›¸ç­‰
 	//		{
 	//			NoSame = TRUE;
 	//			break;
 	//		}
 	//	}
-	//	if( NoSame )//Èç¹ûÓĞÏàÍ¬µÄ
+	//	if( NoSame )//å¦‚æœæœ‰ç›¸åŒçš„
 	//		continue;
 	//	for( int i = 0; i < cout; i++ )
 	//	{
-	//		if( !IsUsed[i]  )//Èç¹ûÃ»ÓĞ·ÖÅä
+	//		if( !IsUsed[i]  )//å¦‚æœæ²¡æœ‰åˆ†é…
 	//		{
 	//			idx[i] = nrand;
-	//			IsUsed[i] = TRUE;//ÉèÎªÒÑ·ÖÅä
+	//			IsUsed[i] = TRUE;//è®¾ä¸ºå·²åˆ†é…
 	//			break;
 	//		}
 	//	}
