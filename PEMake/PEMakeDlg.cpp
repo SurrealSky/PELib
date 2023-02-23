@@ -195,25 +195,32 @@ void CPEMakeDlg::OnBnClickedButton1()
 
 	bool bRet = false;
 
+	std::string savePath = mPEMake.mPeCtx.path;
+	int pos = savePath.find_last_of('.');
+	
 	if (IsDlgButtonChecked(IDC_RADIO1))
 	{
 		bRet = mPEMake.Protect1A();
+		savePath.insert(pos + 1, "patch.");
 	}
 	else if (IsDlgButtonChecked(IDC_RADIO2))
 	{
 		bRet = mPEMake.Protect2A();
+		savePath.insert(pos + 1, "encrypt.");
 	}
 	else if (IsDlgButtonChecked(IDC_RADIO3))
 	{
 		bRet = mPEMake.Protect3A();
+		savePath.insert(pos + 1, "yoda.");
 	}
 	else if (IsDlgButtonChecked(IDC_RADIO4))
 	{
 		bRet = mPEMake.Protect4A();
+		savePath.insert(pos + 1, "vm.");
 	}
 	if(bRet)
 	{
-		CFileDialog dlg(FALSE, "exe", mPEMake.mPeCtx.path.c_str(), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, "TXT Files(*.exe)|*.exe|All Files(*.*)|*.*");
+		CFileDialog dlg(FALSE, "exe", savePath.c_str(), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, "TXT Files(*.exe)|*.exe|All Files(*.*)|*.*");
 		///TRUE为OPEN对话框，FALSE为SAVE AS对话框  
 		if (dlg.DoModal() == IDOK)
 		{
