@@ -913,4 +913,4 @@ void CVMFactory::CompileVMCode(VCodeNode* vcodenode,CVirtualMemory* sect)
 	{
 		sect->WriteData((STu8*)vcodenode->HexCode,vcodenode->HexLen);
 	}
-} 
+}
