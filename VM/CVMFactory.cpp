@@ -204,7 +204,7 @@ void CVMFactory::PlaceHandler()
 			if( !CompileCode(itr->VirtualAddress+itr->CodeLen,text,code,&len) )
 				return;
 			memcpy( &itr->AssembleCode[ itr->CodeLen ],code,len);
-
+			 
 			itr->CodeLen += len;
 
 			m_CodeEngine->WriteData((STu8*)itr->AssembleCode,itr->CodeLen);//写进去
@@ -349,7 +349,7 @@ VMTable* CVMFactory::GetVMTableForAlready(char* vmname)
 	if( GetHandler(vmname) )//如果已经编译
 		return table;
 	//找到了则编译在返回
-	if( !InterpretHandler.InterpretASMStr(table,asmtext,1024) )
+ 	if( !InterpretHandler.InterpretASMStr(table,asmtext,1024) )
 		return NULL;
 	if( !CompileHandler(table->VMInstrName,asmtext) )//编译这个Handler
 		return NULL;
@@ -737,7 +737,7 @@ void CVMFactory::AddDPushIMM(int idx,CodeNode *codenode,CVirtualMemory* sect)
 		//MessageBox(0,"hi.上次不是没解决这里的问题么。","hi.",MB_OK);
 		vcodenode->immconst[0] = codenode->disasm.jmpconst;
 	}
-	else
+	else     
 	{
 		vcodenode->immconst[0] = codenode->disasm.immconst;
 	}
@@ -752,7 +752,7 @@ void CVMFactory::AddDPushREG(int idx,CodeNode *codenode,CVirtualMemory* sect)
 	vcodenode->OperandNum = 1;
 	strcpy_s(vcodenode->VMInstrName,VMNAMELEN,"DPushReg32");
 	
-	int regoffset = codenode->disasm.reg[idx];
+	int regoffset = codenode->disasm.reg[ idx]; 
 	//push pop应该不会有8位的,一般不成立
 	if( codenode->disasm.highbit[idx] )//如果是高位
 		regoffset++;//取高位
