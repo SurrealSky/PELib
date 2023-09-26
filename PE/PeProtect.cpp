@@ -702,6 +702,7 @@ bool PeProtect::EncryptImportTable()
 *参数二：补丁数据
 *参数三：补丁数据大小
 *参数四：(E9)XX XX XX XX指令相对补丁起始偏移
+* 补丁数据中包含E9 XXXXXXXX指令，这里只进行修正
 */
 bool PeProtect::AddPatch(const STu8 *pName,const void *pPatch,const unsigned int dwSize,const unsigned int mOffset,const unsigned int nopbytes)
 {
@@ -733,7 +734,7 @@ bool PeProtect::AddPatch(const STu8 *pName,const void *pPatch,const unsigned int
 *参数一：区段名
 *参数二：补丁数据
 *参数三：补丁数据大小
-* 特点：将补丁代码加入新区段，原始PE文件不进行修改。
+* 特点：将补丁代码加入新区段,并在补丁末尾添加E9 XXXXXXXX跳转指令，原始PE文件不进行修改。
 */
 bool PeProtect::AddPatchAuto2OEP(const STu8 *pName, const void *pPatch, const unsigned int dwSize, const unsigned int nopbytes)
 {
